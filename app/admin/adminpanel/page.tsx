@@ -231,9 +231,9 @@ export default function AdminPanel() {
   const fetchSuggestions = async () => {
     const { data } = await supabase.from('questions').select('subject, chapter, topic');
     if (data) {
-      setSubjectSuggestions([...new Set(data.map((q: any) => q.subject).filter(Boolean))]);
-      setChapterSuggestions([...new Set(data.map((q: any) => q.chapter).filter(Boolean))]);
-      setTopicSuggestions([...new Set(data.map((q: any) => q.topic).filter(Boolean))]);
+      setSubjectSuggestions([...new Set(data.map((q: any) => q.subject).filter(Boolean))]as string[]);
+      setChapterSuggestions([...new Set(data.map((q: any) => q.chapter).filter(Boolean))]as string[]);
+      setTopicSuggestions([...new Set(data.map((q: any) => q.topic).filter(Boolean))]as string[]);
     }
   };
 

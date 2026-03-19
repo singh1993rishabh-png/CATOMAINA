@@ -100,94 +100,121 @@ function StudentCanvas() {
       ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
     }
 
-    function drawStudent(cx:number,cy:number,bob:number,tilt:number) {
-      const W=canvas?.width, H=canvas?.height;
-      const s = Math.min(W,H)*0.003;
-      ctx.save(); ctx.translate(cx+tilt*10, cy+bob);
+    function drawStudent(cx: number, cy: number, bob: number, tilt: number) {
+  // 1. Fallback for canvas dimensions (?? 0 ensures it's never undefined)
+  const W = canvas?.width ?? 0; 
+  const H = canvas?.height ?? 0;
+  const s = Math.min(W, H) * 0.003;
 
-      // Body glow
-      glow(0,50*s,120*s,"rgba(249,115,22,",0.22);
-      glow(-20*s,80*s,70*s,"rgba(139,92,246,",0.15);
+  // 2. Ensure ctx exists before calling methods
+  if (!ctx) return; 
 
-      // Body
-      ctx.fillStyle="#1a0a0a";
-      ctx.beginPath(); ctx.ellipse(0,80*s,42*s,55*s,0,0,Math.PI*2); ctx.fill();
-      // Shirt / collar accent
-      ctx.fillStyle="#f97316";
-      ctx.beginPath(); ctx.ellipse(0,48*s,16*s,12*s,0,0,Math.PI*2); ctx.fill();
-      // Neck
-      ctx.fillStyle="#c8a882"; ctx.fillRect(-9*s,12*s,18*s,28*s);
+  ctx.save(); 
+  ctx.translate(cx + tilt * 10, cy + bob);
 
-      // Head
-      ctx.fillStyle="#c8a882";
-      ctx.beginPath(); ctx.arc(0,0,40*s,0,Math.PI*2); ctx.fill();
+  // Body glow
+  glow(0, 50 * s, 120 * s, "rgba(249,115,22,", 0.22);
+  glow(-20 * s, 80 * s, 70 * s, "rgba(139,92,246,", 0.15);
 
-      // Hair — dark with slight fade
-      ctx.fillStyle="#0d0508";
-      ctx.beginPath(); ctx.arc(0,-8*s,40*s,Math.PI,0); ctx.fill();
-      ctx.fillRect(-40*s,-10*s,80*s,16*s);
-      for(let i=-3;i<=3;i++){
-        ctx.beginPath(); ctx.ellipse(i*11*s,-20*s,9*s,16*s,i*0.08,0,Math.PI*2); ctx.fill();
-      }
+  // Body
+  ctx.fillStyle = "#1a0a0a";
+  ctx.beginPath(); 
+  ctx.ellipse(0, 80 * s, 42 * s, 55 * s, 0, 0, Math.PI * 2); 
+  ctx.fill();
 
-      // Face shade
-      ctx.fillStyle="#d4b896";
-      ctx.beginPath(); ctx.arc(0,6*s,32*s,0,Math.PI); ctx.fill();
-      ctx.fillRect(-32*s,-14*s,64*s,22*s);
+  // Shirt / collar accent
+  ctx.fillStyle = "#f97316";
+  ctx.beginPath(); 
+  ctx.ellipse(0, 48 * s, 16 * s, 12 * s, 0, 0, Math.PI * 2); 
+  ctx.fill();
 
-      // Blink
-      const blink = Math.sin(t*0.5)>0.97 ? 0.08 : 1;
-      ctx.fillStyle="#1a0520";
-      ctx.beginPath(); ctx.ellipse(-14*s,4*s,7.5*s,7.5*s*blink,0,0,Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.ellipse(14*s,4*s,7.5*s,7.5*s*blink,0,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle="#fff";
-      ctx.beginPath(); ctx.arc(-11*s,1*s,2.5*s,0,Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(16*s,1*s,2.5*s,0,Math.PI*2); ctx.fill();
+  // Neck
+  ctx.fillStyle = "#c8a882"; 
+  ctx.fillRect(-9 * s, 12 * s, 18 * s, 28 * s);
 
-      // Eyebrows — thick, expressive
-      ctx.strokeStyle="#1a0508"; ctx.lineWidth=3.5*s; ctx.lineCap="round";
-      ctx.beginPath(); ctx.moveTo(-21*s,-12*s); ctx.quadraticCurveTo(-14*s,-17*s,-7*s,-12*s); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(7*s,-12*s); ctx.quadraticCurveTo(14*s,-17*s,21*s,-12*s); ctx.stroke();
+  // Head
+  ctx.fillStyle = "#c8a882";
+  ctx.beginPath(); 
+  ctx.arc(0, 0, 40 * s, 0, Math.PI * 2); 
+  ctx.fill();
 
-      // Nose
-      ctx.strokeStyle="#b89070"; ctx.lineWidth=1.5*s;
-      ctx.beginPath(); ctx.moveTo(0,-2*s); ctx.lineTo(-5*s,12*s); ctx.lineTo(5*s,12*s); ctx.stroke();
+  // Hair
+  ctx.fillStyle = "#0d0508";
+  ctx.beginPath(); 
+  ctx.arc(0, -8 * s, 40 * s, Math.PI, 0); 
+  ctx.fill();
+  ctx.fillRect(-40 * s, -10 * s, 80 * s, 16 * s);
+  for (let i = -3; i <= 3; i++) {
+    ctx.beginPath(); 
+    ctx.ellipse(i * 11 * s, -20 * s, 9 * s, 16 * s, i * 0.08, 0, Math.PI * 2); 
+    ctx.fill();
+  }
 
-      // Smile
-      ctx.strokeStyle="#8a4030"; ctx.lineWidth=2.2*s;
-      ctx.beginPath(); ctx.moveTo(-11*s,21*s); ctx.quadraticCurveTo(0,28*s,11*s,21*s); ctx.stroke();
+  // Face shade
+  ctx.fillStyle = "#d4b896";
+  ctx.beginPath(); 
+  ctx.arc(0, 6 * s, 32 * s, 0, Math.PI); 
+  ctx.fill();
+  ctx.fillRect(-32 * s, -14 * s, 64 * s, 22 * s);
 
-      // Ears
-      ctx.fillStyle="#c8a882";
-      ctx.beginPath(); ctx.ellipse(-40*s,5*s,8*s,11*s,0,0,Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.ellipse(40*s,5*s,8*s,11*s,0,0,Math.PI*2); ctx.fill();
+  // Blink - Ensure 't' is defined globally or passed as an argument
+  // If 't' is a variable from your animation loop:
+  const currentTime = typeof t !== 'undefined' ? t : Date.now() / 1000;
+  const blink = Math.sin(currentTime * 0.5) > 0.97 ? 0.08 : 1;
+  
+  ctx.fillStyle = "#1a0520";
+  ctx.beginPath(); ctx.ellipse(-14 * s, 4 * s, 7.5 * s, 7.5 * s * blink, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(14 * s, 4 * s, 7.5 * s, 7.5 * s * blink, 0, 0, Math.PI * 2); ctx.fill();
+  
+  ctx.fillStyle = "#fff";
+  ctx.beginPath(); ctx.arc(-11 * s, 1 * s, 2.5 * s, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(16 * s, 1 * s, 2.5 * s, 0, Math.PI * 2); ctx.fill();
 
-      // Floating book
-      const bookT = Math.sin(t*0.8+1)*8;
-      ctx.save(); ctx.translate(56*s+bookT*0.3, -30*s+Math.sin(t+2)*6);
-      ctx.rotate(-0.3+Math.sin(t*0.4)*0.08);
-      ctx.fillStyle="#f97316";
-      ctx.fillRect(-18*s,-22*s,36*s,44*s);
-      ctx.fillStyle="rgba(255,255,255,0.12)";
-      ctx.fillRect(-2*s,-20*s,2*s,40*s);
-      ctx.fillStyle="rgba(255,255,255,0.5)";
-      for(let i=0;i<5;i++) ctx.fillRect(-12*s,-14*s+i*8*s,24*s,1.5*s);
-      // Book glow
-      glow(0,0,28*s,"rgba(249,115,22,",0.4);
-      ctx.restore();
+  // Eyebrows
+  ctx.strokeStyle = "#1a0508"; ctx.lineWidth = 3.5 * s; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(-21 * s, -12 * s); ctx.quadraticCurveTo(-14 * s, -17 * s, -7 * s, -12 * s); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(7 * s, -12 * s); ctx.quadraticCurveTo(14 * s, -17 * s, 21 * s, -12 * s); ctx.stroke();
 
-      // Floating pencil
-      ctx.save(); ctx.translate(-58*s, -20*s+Math.sin(t*0.9)*7);
-      ctx.rotate(0.4+Math.sin(t*0.3)*0.06);
-      ctx.fillStyle="#facc15"; ctx.fillRect(-4*s,-30*s,8*s,52*s);
-      ctx.fillStyle="#f97316"; ctx.beginPath(); ctx.moveTo(-4*s,22*s); ctx.lineTo(4*s,22*s); ctx.lineTo(0,36*s); ctx.closePath(); ctx.fill();
-      ctx.fillStyle="#1a0a0a"; ctx.beginPath(); ctx.moveTo(-4*s,-30*s); ctx.lineTo(4*s,-30*s); ctx.lineTo(4*s,-24*s); ctx.lineTo(-4*s,-24*s); ctx.closePath(); ctx.fill();
-      ctx.restore();
+  // Nose
+  ctx.strokeStyle = "#b89070"; ctx.lineWidth = 1.5 * s;
+  ctx.beginPath(); ctx.moveTo(0, -2 * s); ctx.lineTo(-5 * s, 12 * s); ctx.lineTo(5 * s, 12 * s); ctx.stroke();
 
-      // Ground glow
-      glow(0,130*s+bob,100*s,"rgba(249,115,22,",0.2);
-      ctx.restore();
-    }
+  // Smile
+  ctx.strokeStyle = "#8a4030"; ctx.lineWidth = 2.2 * s;
+  ctx.beginPath(); ctx.moveTo(-11 * s, 21 * s); ctx.quadraticCurveTo(0, 28 * s, 11 * s, 21 * s); ctx.stroke();
+
+  // Ears
+  ctx.fillStyle = "#c8a882";
+  ctx.beginPath(); ctx.ellipse(-40 * s, 5 * s, 8 * s, 11 * s, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(40 * s, 5 * s, 8 * s, 11 * s, 0, 0, Math.PI * 2); ctx.fill();
+
+  // Floating book
+  const bookT = Math.sin(currentTime * 0.8 + 1) * 8;
+  ctx.save(); 
+  ctx.translate(56 * s + bookT * 0.3, -30 * s + Math.sin(currentTime + 2) * 6);
+  ctx.rotate(-0.3 + Math.sin(currentTime * 0.4) * 0.08);
+  ctx.fillStyle = "#f97316";
+  ctx.fillRect(-18 * s, -22 * s, 36 * s, 44 * s);
+  ctx.fillStyle = "rgba(255,255,255,0.12)";
+  ctx.fillRect(-2 * s, -20 * s, 2 * s, 40 * s);
+  ctx.fillStyle = "rgba(255,255,255,0.5)";
+  for (let i = 0; i < 5; i++) ctx.fillRect(-12 * s, -14 * s + i * 8 * s, 24 * s, 1.5 * s);
+  glow(0, 0, 28 * s, "rgba(249,115,22,", 0.4);
+  ctx.restore();
+
+  // Floating pencil
+  ctx.save(); 
+  ctx.translate(-58 * s, -20 * s + Math.sin(currentTime * 0.9) * 7);
+  ctx.rotate(0.4 + Math.sin(currentTime * 0.3) * 0.06);
+  ctx.fillStyle = "#facc15"; ctx.fillRect(-4 * s, -30 * s, 8 * s, 52 * s);
+  ctx.fillStyle = "#f97316"; ctx.beginPath(); ctx.moveTo(-4 * s, 22 * s); ctx.lineTo(4 * s, 22 * s); ctx.lineTo(0, 36 * s); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#1a0a0a"; ctx.beginPath(); ctx.moveTo(-4 * s, -30 * s); ctx.lineTo(4 * s, -30 * s); ctx.lineTo(4 * s, -24 * s); ctx.lineTo(-4 * s, -24 * s); ctx.closePath(); ctx.fill();
+  ctx.restore();
+
+  // Ground glow
+  glow(0, 130 * s + bob, 100 * s, "rgba(249,115,22,", 0.2);
+  ctx.restore();
+}
 
     const draw = () => {
       const W=canvas.width, H=canvas.height;

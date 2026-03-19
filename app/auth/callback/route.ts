@@ -11,9 +11,8 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (!error) {
-      // Upsert the profile row for Google OAuth users
-      // The SQL trigger handles email/password signups, but OAuth users need this
       const { data: { user } } = await supabase.auth.getUser()
+
       if (user) {
         const fullName =
           user.user_metadata?.full_name ??
@@ -21,15 +20,20 @@ export async function GET(request: Request) {
           user.email?.split('@')[0] ??
           'Student'
 
-        // Upsert profile — ignore errors (RLS may block, trigger handles email/pw signups)
-        await supabase.from('profiles').upsert(
-          {
-            id: user.id,
-            name: fullName,
-            avatar_url: user.user_metadata?.avatar_url ?? null,
-          },
-          { onConflict: 'id', ignoreDuplicates: false }
-        ).then(() => {}).catch(() => {}) // Non-blocking
+        // FIX: Use try/catch instead of .then().catch() to satisfy TypeScript
+        try {
+          await supabase.from('profiles').upsert(
+            {
+              id: user.id,
+              name: fullName,
+              avatar_url: user.user_metadata?.avatar_url ?? null,
+            },
+            { onConflict: 'id', ignoreDuplicates: false }
+          )
+        } catch (upsertError) {
+          // Log the error but don't block the redirect
+          console.error("Profile upsert failed:", upsertError);
+        }
       }
 
       return NextResponse.redirect(`${origin}${next}`)

@@ -3,6 +3,7 @@ import { createClient } from '@/app/utils/supabase/server'
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? origin
   const code = searchParams.get('code')
   const next = searchParams.get('next') ?? '/dashboard'
 
@@ -36,9 +37,9 @@ export async function GET(request: Request) {
         }
       }
 
-      return NextResponse.redirect(`${origin}${next}`)
+      return NextResponse.redirect(`${siteUrl}${next}`)
     }
   }
 
-  return NextResponse.redirect(`${origin}/login?error=Could not sign in with Google`)
+  return NextResponse.redirect(`${siteUrl}/login?error=Could not sign in with Google`)
 }

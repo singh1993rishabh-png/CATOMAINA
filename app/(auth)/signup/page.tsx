@@ -61,7 +61,7 @@ function SignupContent() {
     setGoogleLoading(true);
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: { redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin}/auth/callback` },
     });
     if (error) { setLocalError(error.message); setGoogleLoading(false); }
     // On success: browser redirects to Google, so no need to reset loading
